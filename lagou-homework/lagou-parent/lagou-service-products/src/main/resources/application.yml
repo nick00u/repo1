@@ -1,0 +1,51 @@
+server:
+  port: 9600
+
+spring:
+  #解决bean重复注册问题
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: lagou-service-products
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.200.20:3307/lagou?userUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+    password: 123456
+  data:
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: 192.168.200.20:9300
+  cloud:
+    zookeeper:
+      connect-string: 192.168.200.20:2184,192.168.200.20:2185,192.168.200.20:2186
+  kafka:
+    bootstrap-servers: 192.168.200.20:9092,192.168.200.20:9093,192.168.200.20:9094
+    consumer:
+      group-id: product
+      enable-auto-commit: true
+      auto-commit-interval: 1000s
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+
+mybatis-plus:
+  configuration:
+    #开启驼峰命名规则
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+# springboot中暴露健康检查等断点接口
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  # 暴露健康接口的细节
+  endpoint:
+    health:
+      show-details: always
