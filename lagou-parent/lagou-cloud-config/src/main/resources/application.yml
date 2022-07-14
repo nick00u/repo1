@@ -1,0 +1,38 @@
+server:
+  port: 9400
+
+# 配置注册中心信息
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+  client:
+    service-url: # 客户端与 EurekaServer 交互的地址，如果是集群，也需要写其它Server的地址，采用英文逗号分隔即可
+      defaultZone: http://${spring.cloud.client.ip-address}:9301/eureka/
+
+spring:
+  application:
+    name: lagou-cloud-config
+  # 配置中心拉取服务器地址
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/wangsakura/lagou-config.git
+          username: wangsakura
+          password: *  #密码回头修改
+          search-paths:
+            - lagou-config
+      label: master
+  # 消息队列
+  rabbitmq:
+    host: 192.168.123.128 #虚拟机ip
+    username: wmm
+    password: 123456
+
+# 暴露服务端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

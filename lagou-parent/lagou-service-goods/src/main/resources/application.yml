@@ -1,0 +1,24 @@
+server:
+  port: 9200
+#数据库连接
+spring:
+  application:
+    name: lagou-service-goods
+  datasource:
+    url: jdbc:mysql://localhost:3306/springbootdata?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: manager
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+  client:
+    service-url: # 客户端与 EurekaServer 交互的地址，如果是集群，也需要写其它Server的地址，采用英文逗号分隔即可
+      defaultZone: http://LagouCloudEurekaServerA:9300/eureka
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wmm.pojo

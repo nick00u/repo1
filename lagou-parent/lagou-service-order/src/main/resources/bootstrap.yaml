@@ -1,0 +1,56 @@
+server:
+  port: 9100
+
+spring:
+  application:
+    name: lagou-service-order
+  datasource:
+    url: jdbc:mysql://localhost:3306/springbootdata?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: manager
+
+  cloud:
+    config:
+      name: application
+      profile: dev # 环境设置
+      label: master # 分支名称
+      uri: http://127.0.0.1:9400 # 配置服务器地址
+
+  rabbitmq:
+    host: 192.168.123.128
+    username: wmm
+    password: 123456
+
+  mybatis:
+    configuration:
+      map-underscore-to-camel-case: true
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: com.wmm.pojo
+
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+  client:
+    service-url: # 客户端与 EurekaServer 交互的地址，如果是集群，也需要写其它Server的地址，采用英文逗号分隔即可
+      defaultZone: http://LagouCloudEurekaServerA:9300/eureka
+
+# 开启熔断器
+feign:
+  hystrix:
+    enabled: true
+
+# 配置熔断策略
+hystrix:
+  threadpool:
+    default:
+      coreSize: 16 # 并发执行的最大线程数，默认10
+      maxQueueSize: 1000 # 最大队列数，默认值 -1
+      queueSizeRejectionThreshold: 6000 # 队列拒绝最大值
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000 # 熔断超时设置，默认为1秒

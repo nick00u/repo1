@@ -1,0 +1,23 @@
+server:
+  port: 9001
+eureka:
+  client:
+    serviceUrl: # eureka server的路径
+      defaultZone: http://LagouCloudEurekaServerA:9300/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+spring:
+  application:
+    name: lagou-cloud-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: service-goods-router # 路由名称
+          uri: lb://lagou-service-goods
+          predicates: # 当断言成功后，交给某一个微服务处理时使用的是转发
+            - Path=/product/** # 路径匹配字符串
+        - id: service-order-router
+          uri: lb://lagou-service-order
+          predicates:
+            - Path=/order/**
